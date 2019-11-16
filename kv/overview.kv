@@ -1,0 +1,43 @@
+<OverviewScreen>
+
+    MDBackdrop:
+        id: backdrop
+        on_open: print("on_open")
+        on_close: print("on_close")
+        left_action_items: [['menu', lambda x: self.open()]]
+        title: "DigiComo"
+        header_text: "Featured Items"
+
+        MDBackdropBackLayer:
+            MyBackdropBackLayer:
+                id: backlayer
+
+        MDBackdropFrontLayer:
+            MyBackdropFrontLayer:
+                backdrop: backdrop
+                backlayer: backlayer
+
+<CustomImage@ButtonBehavior+AsyncImage>:
+
+<MyCard>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: dp(300)
+    pos_hint: {'top': 1}
+
+    CustomImage:
+        source: root.src
+        size_hint: None, None
+        size: root.width, root.height
+        pos_hint: {'top': 1}
+        on_release:
+            print(root.extra_info)
+
+    MDLabel:
+        theme_text_color: 'Custom'
+        bold: True
+        text_color: app.theme_cls.primary_color
+        text: root.text
+        size_hint_y: None
+        height: dp(60)
+        halign: 'center'
