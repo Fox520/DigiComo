@@ -71,7 +71,7 @@ class BoxBottomSheet(ThemableBehavior, BoxLayout):
             if widget.__class__ is PreviousImage:
                 count_item += 1
                 total_price += int(
-                    float(widget.description.split("\n")[1].split("$ ")[1])
+                    float(widget.description.split("\n")[1].split("N$")[1].replace(",", ""))
                 )
                 self.parent.ids.box_bottom_sheet_product_list.data.append(
                     {

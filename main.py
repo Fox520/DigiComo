@@ -6,6 +6,7 @@ import traceback
 
 from kivy.animation import Animation
 from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.modules import screen
@@ -34,12 +35,6 @@ Builder.load_string("""
 
 #:import colors kivymd.color_definitions.colors
 #:import gch kivy.utils.get_color_from_hex
-#:import ShrineToolbar baseclass.toolbar.ShrineToolbar
-#:import ShrineMenu baseclass.menu.ShrineMenu
-#:import BoxBottomSheet baseclass.box_bottom_sheet.BoxBottomSheet
-#:import BoxBottomSheetProductList baseclass.box_bottom_sheet.BoxBottomSheetProductList
-#:import MagicBehavior kivymd.uix.behaviors.MagicBehavior
-#:import ProductScreen baseclass.product_screen.ProductScreen
 #:import Clock kivy.clock.Clock
 #:import environ os.environ
 
@@ -47,6 +42,7 @@ Builder.load_string("""
 #:include kv/overview.kv
 #:include kv/showcatalogue.kv
 #:include kv/box_bottom_sheet.kv
+
 #:include kv/product_screen.kv
 #:include kv/product_gallery.kv
 
@@ -125,6 +121,7 @@ class ShowCatalogueScreen(Screen):
                 _root=self,
             )
         )
+        self.ids.box_bottom_sheet.width + dp(52)
         width = self.ids.box_bottom_sheet.width + dp(52)
         Animation.stop_all(self)
         Animation(width=width, d=0.1).start(self.ids.box_bottom_sheet)
@@ -166,7 +163,8 @@ class FeaturedItemViewManager(BoxLayout):
 
     def setup(self, dt):
         global was_here
-        if was_here == True:
+        if was_here:
+            # else we'll keep adding to the paginator
             return
         was_here = True
         s1 = Screen(name="s1")
@@ -240,7 +238,6 @@ class DigiComo(MDApp):
         self.bind(on_start=self.post_build_init)
         sm = ScreenManager(transition=NoTransition())
         sm.add_widget(OverviewScreen(name="overview_screen"))
-
         start_screen = FeaturedItemViewManager()
         self.swiper_manager = start_screen.ids.swiper_manager
         paginator = MDSwiperPagination()
@@ -248,7 +245,8 @@ class DigiComo(MDApp):
         paginator.manager = self.swiper_manager
         self.swiper_manager.paginator = paginator
         start_screen.add_widget(paginator)
-
+        from kivy.modules import inspector
+        inspector.create_inspector(Window, sm)
         return sm
 
     def post_build_init(self, ev):
